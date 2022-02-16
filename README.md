@@ -1,6 +1,6 @@
 # Opolis discord bot
 
-This is a discord bot created by Blockchain at ASU during EthDenver for Opolis bounty #1. It matches contributors and projects together.
+This is a discord bot created by Blockchain at ASU during EthDenver 2022 for Opolis bounty #1. It matches contributors and projects together.
 
 ## Setup
 
