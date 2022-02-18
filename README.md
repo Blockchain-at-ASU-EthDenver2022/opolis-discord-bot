@@ -4,7 +4,7 @@ This is a discord bot created by Blockchain at ASU during EthDenver 2022 for Opo
 
 ## Setup
 
-Clone the repository and run ```npm install``` to download all required dependencies. Make sure to create an application and bot on discord.com/developers. Copy the bot token, clientId, and guildId in ```config.json```. Once the bot is added to your server with the appropriate permission, run ```node deploy-commands.js```. From there, running ```node index.js``` will start the bot. You will receive a ```Ready!``` message in your console when the bot has started successfully.
+Clone the repository and run ```npm install``` to download all required dependencies. Make sure to create an application and bot on discord.com/developers. Copy the bot token, clientId, and guildId in ```config.json```. Once the bot is added to your server with the appropriate permissions, run ```node deploy-commands.js```. From there, running ```node index.js``` will start the bot. You will receive a ```Ready!``` message in your console when the bot has started successfully.
 
 ## Details
 
