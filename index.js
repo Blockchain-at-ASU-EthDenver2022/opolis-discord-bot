@@ -1,164 +1,23 @@
-const Sequelize = require('sequelize');
 const { Client, Intents, MessageActionRow, MessageSelectMenu, MessageEmbed } = require('discord.js');
 const { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote } = require('@discordjs/builders');
 const { token } = require('./config.json');
-
-// Create server instance
-const sequelize = new Sequelize('database', 'user', 'password', {
-	host: 'localhost',
-	dialect: 'sqlite',
-	logging: false,
-	// SQLite only
-	storage: 'database.sqlite',
-});
-
-const contributors = sequelize.define('contributors', {
-	id: {
-		type: Sequelize.STRING,
-		primaryKey: true,
-	},
-	description: {
-        type: Sequelize.TEXT,
-        defaultValue: "",
-    },
-    devExperience: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    communityExperience: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    marketingExperience: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    productExperience: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    opsExperience: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel1: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel2: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel3: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel4: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel5: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    daoInterest: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    defiInterest: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    nftInterest: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    publicGoodsInterest: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    artInterest: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-});
-
-const projects = sequelize.define('projects', {
-	id: {
-		type: Sequelize.STRING,
-		primaryKey: true,
-	},
-    description: {
-        type: Sequelize.TEXT,
-        defaultValue: "",
-    },
-    devRole: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    communityRole: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    marketingRole: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    productRole: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    opsRole: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel1: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel2: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel3: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel4: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    experienceLevel5: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    daoType: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    defiType: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    nftType: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    publicGoodsType: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-    artType: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-    },
-});
+const database = require('./database');
+const contributors = database.contributors;
+const projects = database.projects;
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
+    client.user.setPresence({
+        activities: [{ 
+          name: "collaboration",
+          type: "WATCHING"
+        }],
+        status: "active"
+    })
+    
     contributors.sync();
     projects.sync();
 	console.log('Ready!');
@@ -485,7 +344,7 @@ client.on('interactionCreate', async interaction => {
                             `${contributor.description}\n` +
                             bold('Contributor discord:\n') + `${contributerUser.username}#${contributerUser.discriminator}`);
                         } else {
-                            user.send(bold('Matched contributor discord:') + `${contributerUser.username}#${contributerUser.discriminator}`);
+                            user.send(bold('Matched contributor discord:\n') + `${contributerUser.username}#${contributerUser.discriminator}`);
                         }              
                     });
                     
