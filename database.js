@@ -2,22 +2,22 @@ const Sequelize = require('sequelize');
 
 // Create server instance
 const sequelize = new Sequelize('database', 'user', 'password', {
-	host: 'localhost',
-	dialect: 'sqlite',
-	logging: false,
-	// SQLite only
-	storage: 'database.sqlite',
+    host: 'localhost',
+    dialect: 'sqlite',
+    logging: false,
+    // SQLite only
+    storage: 'database.sqlite',
 });
 
 const contributors = sequelize.define('contributors', {
-	id: {
-		type: Sequelize.STRING,
-		primaryKey: true,
-	},
+    id: {
+        type: Sequelize.STRING,
+        primaryKey: true,
+    },
     serverid: {
-		type: Sequelize.STRING,
-	},
-	description: {
+        type: Sequelize.STRING,
+    },
+    description: {
         type: Sequelize.TEXT,
         defaultValue: "",
     },
@@ -84,13 +84,13 @@ const contributors = sequelize.define('contributors', {
 });
 
 const projects = sequelize.define('projects', {
-	id: {
-		type: Sequelize.STRING,
-		primaryKey: true,
-	},
+    id: {
+        type: Sequelize.STRING,
+        primaryKey: true,
+    },
     serverid: {
-		type: Sequelize.STRING,
-	},
+        type: Sequelize.STRING,
+    },
     description: {
         type: Sequelize.TEXT,
         defaultValue: "",
