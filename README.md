@@ -34,8 +34,8 @@ This bot is meant to act as a proof of concept for using the discord platform as
 
 ## Improvements
 
-- Use an architecture which allows multiple instances of the bot to run in parallel. An easy way to do this would be to pass the interaction to another thread based on guild id, because seperate discord servers do not need to have their data synced. All of the computationally expensive database interaction can be spread across multiple instances.
+- Use an architecture which allows multiple instances of the bot to run in parallel. An easy way to do this would be to pass the interaction to another thread based on guild id, because seperate discord servers do not need to have their data synced. All of the computationally expensive database interactions can be spread across multiple instances.
 
 - Adding a proper management system for contributor and project permissions, to allow servers to lock commands behind roles. This was not added as it may soon be obsolete with https://support.discord.com/hc/en-us/articles/4644915651095-Command-Permissions.
 
-- Allow interoperability between groups of servers who opt-in to be part of the same pool of projects and contributors. This functionality could be fairly complex to implement depending on the details of the implementation. The easiest way to implement the functionality would be for one server to act as the administrator of a group, with the ability to invite/kick others from the pool.
+- Allow interoperability between groups of servers who opt-in to be part of the same pool of projects and contributors. This functionality could be fairly complex to add depending on the details. The easiest way to implement the functionality would be for one server to act as the administrator of a group, with the ability to invite/kick other servers the pool.
