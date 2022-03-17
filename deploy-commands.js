@@ -30,7 +30,7 @@ const commands = [
 				.setRequired(true)),
 	new SlashCommandBuilder()
 		.setName('search')
-		.setDescription('Searches suitable projects based on contributor info'),
+		.setDescription('Searches suitable contributors based on project info'),
 ]
 	.map(command => command.toJSON());
 

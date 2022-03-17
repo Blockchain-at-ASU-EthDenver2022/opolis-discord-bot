@@ -46,7 +46,7 @@ client.on('interactionCreate', async interaction => {
 
             const embed = new MessageEmbed().setTitle('Enter contributor information below')
             
-            interaction.reply({ embeds: [embed], components: [experienceTypeRow, experienceTimeRow, interestAreasRow] });
+            interaction.reply({ ephemeral: true, embeds: [embed], components: [experienceTypeRow, experienceTimeRow, interestAreasRow] });
         
         } else if (interaction.commandName === 'projectinfo') {
             const projectExists = await projects.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
@@ -68,7 +68,7 @@ client.on('interactionCreate', async interaction => {
 
             const embed = new MessageEmbed().setTitle('Enter project information below')
             
-            interaction.reply({ embeds: [embed], components: [rolesNeededRow, experienceTimeRequiredRow, projectTypeRow] });
+            interaction.reply({ ephemeral: true, embeds: [embed], components: [rolesNeededRow, experienceTimeRequiredRow, projectTypeRow] });
         
         } else if (interaction.commandName === 'contributordescription') {
             const contributorExists = await contributors.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
@@ -83,7 +83,7 @@ client.on('interactionCreate', async interaction => {
 
             await contributors.update({ description: interaction.options.getString('description')}, { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
             
-            interaction.reply(bold('Set contributor description to:\n') + `${interaction.options.getString('description')}`);
+            interaction.reply({ ephemeral: true, content: bold('Set contributor description to:\n') + `${interaction.options.getString('description')}` });
         
         } else if (interaction.commandName === 'projectdescription') {
             const projectExists = await projects.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
@@ -98,9 +98,10 @@ client.on('interactionCreate', async interaction => {
 
             await projects.update({ description: interaction.options.getString('description')}, { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
-            interaction.reply(bold('Set project description to:\n') + `${interaction.options.getString('description')}`);
+            interaction.reply({ ephemeral: true, content: bold('Set project description to:\n') + `${interaction.options.getString('description')}` });
         
         } else if (interaction.commandName === 'search') {
+            //Search commands are deliberately not made ephemeral in order to allow easier detection of search-spamming.
             const projectExists = await projects.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
             console.log(projectExists.dataValues);
@@ -230,7 +231,7 @@ client.on('interactionCreate', async interaction => {
                 }
             }
 
-            interaction.reply(bold('Experience type(s) updated'));
+            interaction.reply({ ephemeral: true, content: bold('Experience type(s) updated') });
 
         } else if (interaction.customId === 'experienceTime') {
             await contributors.update({ 
@@ -269,7 +270,7 @@ client.on('interactionCreate', async interaction => {
                     break;
             }
 
-            interaction.reply(bold('Experience time updated'));
+            interaction.reply({ ephemeral: true, content: bold('Experience time updated') });
 
         } else if (interaction.customId === 'interestAreas') {
             await contributors.update({ 
@@ -310,7 +311,7 @@ client.on('interactionCreate', async interaction => {
                 }
             }
 
-            interaction.reply(bold('Interest areas(s) updated'));
+            interaction.reply({ ephemeral: true, content: bold('Interest areas(s) updated') });
         } else if (interaction.customId === 'rolesNeeded') {
             await projects.update({ 
                 devRole: 0,
@@ -349,7 +350,7 @@ client.on('interactionCreate', async interaction => {
                         break;
                 }
             }
-            interaction.reply(bold('Role(s) needed updated'));
+            interaction.reply({ ephemeral: true, content: bold('Role(s) needed updated') });
         } else if (interaction.customId === 'experienceTimeRequired') {
 
             await projects.update({ 
@@ -388,7 +389,7 @@ client.on('interactionCreate', async interaction => {
                         break;
                 } 
             }
-            interaction.reply(bold('Experience requirements updated'));
+            interaction.reply({ ephemeral: true, content: bold('Experience requirements updated') });
 
         } else if (interaction.customId === 'projectType') {
             await projects.update({ 
@@ -429,7 +430,7 @@ client.on('interactionCreate', async interaction => {
                 }
             }
             
-            interaction.reply(bold('Project type(s) updated'));
+            interaction.reply({ ephemeral: true, content: bold('Project type(s) updated') });
         }
     }
 });
