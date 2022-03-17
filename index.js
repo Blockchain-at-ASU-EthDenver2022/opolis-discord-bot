@@ -36,10 +36,13 @@ client.on('interactionCreate', async interaction => {
                 });
                 console.log(`Added new contributor: ${interaction.member.user.id}`);
             } else {
+                const description = contributorExists.dataValues.description;
+
                 await contributors.destroy({ where: { id: interaction.member.user.id } });
                 const newContributor = await contributors.create({
                     id: interaction.member.user.id,
                     serverid: interaction.guildId,
+                    description: description
                 });
                 console.log(`Reset contributor data: ${interaction.member.user.id}`);
             }
@@ -50,7 +53,7 @@ client.on('interactionCreate', async interaction => {
         
         } else if (interaction.commandName === 'projectinfo') {
             const projectExists = await projects.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
-            
+
             if (!projectExists) {
                 const newProject = await projects.create({
                     id: interaction.member.user.id,
@@ -58,10 +61,13 @@ client.on('interactionCreate', async interaction => {
                 });
                 console.log(`Added new project: ${interaction.member.user.id}`);
             } else {
+                const description = projectExists.dataValues.description;
+
                 await projects.destroy({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                 const newProject = await projects.create({
                     id: interaction.member.user.id,
                     serverid: interaction.guildId,
+                    description: description
                 });
                 console.log(`Reset project data: ${interaction.member.user.id}`);
             }
@@ -104,10 +110,8 @@ client.on('interactionCreate', async interaction => {
             //Search commands are deliberately not made ephemeral in order to allow easier detection of search-spamming.
             const projectExists = await projects.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
-            console.log(projectExists.dataValues);
-
             if (!projectExists) {
-                interaction.reply(bold(`Invalid search: no project associated with ${interaction.member.user.id}`));
+                interaction.reply({ ephemeral: true, content: bold(`Invalid search: no project associated with your account`) });
                 return;
             }
 
@@ -117,11 +121,15 @@ client.on('interactionCreate', async interaction => {
 
             //Loop over all contributors and this project
             for (i = 0; i < allContributors.length; i++) {
+                const contributor = allContributors[i].dataValues;
+
+                if(project.id === contributor.id) {
+                    continue;
+                }
+
                 let experienceTypeCompatible = false;
                 let experienceTimeCompatible = false;
                 let interestsProjectTypeCompatible = false;
-
-                let contributor = allContributors[i].dataValues;
                 
                 //Check if type of experience is compatible
                 if (
@@ -176,18 +184,18 @@ client.on('interactionCreate', async interaction => {
                     
                     client.users.fetch(contributor.id, false).then(async (user) => {
                         const projectUser = await client.users.fetch(project.id);
-                        if (contributor.description !== '') {
+                        if (project.description !== '') {
                             user.send(bold('Description of matched project:\n') +
-                            `${contributor.description}\n` +
+                            `${project.description}\n` +
                             bold('Project discord:\n') + `${projectUser.username}#${projectUser.discriminator}`);
                         } else {
                             user.send(bold('Matched project discord:\n') + `${projectUser.username}#${projectUser.discriminator}`);
                         }        
                     });
 
-                    interaction.reply(bold('Search executed. DMs sent if requirements were met.'));
                 }
             }
+            interaction.reply(bold('Search executed. DMs sent if requirements were met.'));
         }
     }
 
