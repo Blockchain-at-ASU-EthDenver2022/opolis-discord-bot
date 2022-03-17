@@ -1,6 +1,7 @@
-const { Client, Intents, MessageActionRow, MessageSelectMenu, MessageEmbed } = require('discord.js');
+const { Client, Intents, MessageEmbed } = require('discord.js');
 const { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote } = require('@discordjs/builders');
-const { token } = require('./config.json');
+const { experienceTypeRow, experienceTimeRow, interestAreasRow, rolesNeededRow, experienceTimeRequiredRow, projectTypeRow } = require('./discordEmbeds')
+const { TOKEN } = require('./config.json');
 const database = require('./database');
 const contributors = database.contributors;
 const projects = database.projects;
@@ -26,108 +27,19 @@ client.once('ready', () => {
 client.on('interactionCreate', async interaction => {
 	if (interaction.isCommand()) {
         if (interaction.commandName === 'contributorinfo') {
-            const experienceTypeRow = new MessageActionRow()
-                .addComponents(
-                    new MessageSelectMenu()
-                        .setCustomId('experienceType')
-                        .setPlaceholder('No experience type(s) selected')
-                        .setMinValues(1)
-                        .setMaxValues(3)
-                        .addOptions([
-                            {
-                                label: 'Development',
-                                value: 'dev',
-                            },
-                            {
-                                label: 'Community',
-                                value: 'community',
-                            },
-                            {
-                                label: 'Marketing',
-                                value: 'marketing',
-                            },
-                            {
-                                label: 'Product',
-                                value: 'product',
-                            },
-                            {
-                                label: 'Ops',
-                                value: 'ops',
-                            },
-                        ]),
-                );
-            const experienceTimeRow = new MessageActionRow()
-                .addComponents(
-                    new MessageSelectMenu()
-                        .setCustomId('experienceTime')
-                        .setPlaceholder('No amount of experience selected')
-                        .setMinValues(1)
-                        .setMaxValues(1)
-                        .addOptions([
-                            {
-                                label: 'Less than three months',
-                                value: 'less3months',
-                            },
-                            {
-                                label: 'Less than six months',
-                                value: 'less6months',
-                            },
-                            {
-                                label: 'Less than two years',
-                                value: 'less2years',
-                            },
-                            {
-                                label: 'Less than five years',
-                                value: 'less5years',
-                            },
-                            {
-                                label: 'Greater than five years',
-                                value: 'greater5years',
-                            },
-                        ]),
-                );
-            const interestAreasRow = new MessageActionRow()
-                .addComponents(
-                    new MessageSelectMenu()
-                        .setCustomId('interestAreas')
-                        .setPlaceholder('No interest area(s) selected')
-                        .setMinValues(1)
-                        .setMaxValues(5)
-                        .addOptions([
-                            {
-                                label: 'DAOs',
-                                value: 'daos',
-                            },
-                            {
-                                label: 'DeFi',
-                                value: 'defi',
-                            },
-                            {
-                                label: 'NFTs',
-                                value: 'nfts',
-                            },
-                            {
-                                label: 'Public Goods',
-                                value: 'publicgoods',
-                            },
-                            {
-                                label: 'Art',
-                                value: 'art',
-                            },
-                        ]),
-                );
-
-            const contributorExists = await contributors.findOne({ where: { id: interaction.member.user.id } });
+            const contributorExists = await contributors.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
             
             if (!contributorExists) {
                 const newContributor = await contributors.create({
                     id: interaction.member.user.id,
+                    serverid: interaction.guildId,
                 });
                 console.log(`Added new contributor: ${interaction.member.user.id}`);
             } else {
                 await contributors.destroy({ where: { id: interaction.member.user.id } });
                 const newContributor = await contributors.create({
                     id: interaction.member.user.id,
+                    serverid: interaction.guildId,
                 });
                 console.log(`Reset contributor data: ${interaction.member.user.id}`);
             }
@@ -137,108 +49,19 @@ client.on('interactionCreate', async interaction => {
             interaction.reply({ embeds: [embed], components: [experienceTypeRow, experienceTimeRow, interestAreasRow] });
         
         } else if (interaction.commandName === 'projectinfo') {
-            const rolesNeededRow = new MessageActionRow()
-                .addComponents(
-                    new MessageSelectMenu()
-                        .setCustomId('rolesNeeded')
-                        .setPlaceholder('No needed role(s) selected')
-                        .setMinValues(1)
-                        .setMaxValues(5)
-                        .addOptions([
-                            {
-                                label: 'Development',
-                                value: 'dev',
-                            },
-                            {
-                                label: 'Community',
-                                value: 'community',
-                            },
-                            {
-                                label: 'Marketing',
-                                value: 'marketing',
-                            },
-                            {
-                                label: 'Product',
-                                value: 'product',
-                            },
-                            {
-                                label: 'Ops',
-                                value: 'ops',
-                            },
-                        ]),
-                );
-            const experienceTimeRequiredRow = new MessageActionRow()
-                .addComponents(
-                    new MessageSelectMenu()
-                        .setCustomId('experienceTimeRequired')
-                        .setPlaceholder('No amount(s) of experience selected')
-                        .setMinValues(1)
-                        .setMaxValues(5)
-                        .addOptions([
-                            {
-                                label: 'Less than three months',
-                                value: 'less3months',
-                            },
-                            {
-                                label: 'Less than six months',
-                                value: 'less6months',
-                            },
-                            {
-                                label: 'Less than two years',
-                                value: 'less2years',
-                            },
-                            {
-                                label: 'Less than five years',
-                                value: 'less5years',
-                            },
-                            {
-                                label: 'Greater than five years',
-                                value: 'greater5years',
-                            },
-                        ]),
-                );
-            const projectTypeRow = new MessageActionRow()
-                .addComponents(
-                    new MessageSelectMenu()
-                        .setCustomId('projectType')
-                        .setPlaceholder('No project type(s) selected')
-                        .setMinValues(1)
-                        .setMaxValues(5)
-                        .addOptions([
-                            {
-                                label: 'DAOs',
-                                value: 'daos',
-                            },
-                            {
-                                label: 'DeFi',
-                                value: 'defi',
-                            },
-                            {
-                                label: 'NFTs',
-                                value: 'nfts',
-                            },
-                            {
-                                label: 'Public Goods',
-                                value: 'publicgoods',
-                            },
-                            {
-                                label: 'Art',
-                                value: 'art',
-                            },
-                        ]),
-                );
-
-            const projectExists = await projects.findOne({ where: { id: interaction.member.user.id } });
+            const projectExists = await projects.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
             
             if (!projectExists) {
                 const newProject = await projects.create({
                     id: interaction.member.user.id,
+                    serverid: interaction.guildId,
                 });
                 console.log(`Added new project: ${interaction.member.user.id}`);
             } else {
-                await projects.destroy({ where: { id: interaction.member.user.id } });
+                await projects.destroy({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                 const newProject = await projects.create({
                     id: interaction.member.user.id,
+                    serverid: interaction.guildId,
                 });
                 console.log(`Reset project data: ${interaction.member.user.id}`);
             }
@@ -248,35 +71,37 @@ client.on('interactionCreate', async interaction => {
             interaction.reply({ embeds: [embed], components: [rolesNeededRow, experienceTimeRequiredRow, projectTypeRow] });
         
         } else if (interaction.commandName === 'contributordescription') {
-            const contributorExists = await contributors.findOne({ where: { id: interaction.member.user.id } });
+            const contributorExists = await contributors.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
             
             if (!contributorExists) {
                 await contributors.create({
                     id: interaction.member.user.id,
+                    serverid: interaction.guildId,
                 });
                 console.log(`Added new contributor: ${interaction.member.user.id}`);
             }
 
-            await contributors.update({ description: interaction.options.getString('description')}, { where: { id: interaction.member.user.id } });
+            await contributors.update({ description: interaction.options.getString('description')}, { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
             
             interaction.reply(bold('Set contributor description to:\n') + `${interaction.options.getString('description')}`);
         
         } else if (interaction.commandName === 'projectdescription') {
-            const projectExists = await projects.findOne({ where: { id: interaction.member.user.id } });
+            const projectExists = await projects.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
             
             if (!projectExists) {
                 await projects.create({
                     id: interaction.member.user.id,
+                    serverid: interaction.guildId,
                 });
                 console.log(`Added new project: ${interaction.member.user.id}`);
             }
 
-            await projects.update({ description: interaction.options.getString('description')}, { where: { id: interaction.member.user.id } });
+            await projects.update({ description: interaction.options.getString('description')}, { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
             interaction.reply(bold('Set project description to:\n') + `${interaction.options.getString('description')}`);
         
         } else if (interaction.commandName === 'search') {
-            const projectExists = await projects.findOne({ where: { id: interaction.member.user.id } });
+            const projectExists = await projects.findOne({ where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
             console.log(projectExists.dataValues);
 
@@ -373,34 +198,34 @@ client.on('interactionCreate', async interaction => {
                 marketingExperience: 0,
                 productExperience: 0,
                 opsExperience: 0},
-                { where: { id: interaction.member.user.id } });
+                { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
             for (let i=0; i < interaction.values.length; i++) {
                 switch (interaction.values[i])  {
                     case 'dev':
                         await contributors.update({ 
                             devExperience: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                         break;
                     case 'community':
                         await contributors.update({ 
                             communityExperience: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                         break;
                     case 'marketing':
                         await contributors.update({ 
                             marketingExperience: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                         break;
                     case 'product':
                         await contributors.update({ 
                             productExperience: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                         break;
                     case 'ops':
                         await contributors.update({ 
                             opsExperience: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                         break;
                 }
             }
@@ -414,33 +239,33 @@ client.on('interactionCreate', async interaction => {
                 experienceLevel3: 0,
                 experienceLevel4: 0,
                 experienceLevel5: 0},
-                { where: { id: interaction.member.user.id } });
+                { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
             switch (interaction.values[0])  {
                 case 'less3months':
                     await contributors.update({ 
                         experienceLevel1: 1},
-                        { where: { id: interaction.member.user.id } });
+                        { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                     break;
                 case 'less6months':
                     await contributors.update({ 
                         experienceLevel2: 1},
-                        { where: { id: interaction.member.user.id } });
+                        { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                     break;
                 case 'less2years':
                     await contributors.update({ 
                         experienceLevel3: 1},
-                        { where: { id: interaction.member.user.id } });
+                        { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                     break;
                 case 'less5years':
                     await contributors.update({ 
                         experienceLevel4: 1},
-                        { where: { id: interaction.member.user.id } });
+                        { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                     break;
                 case 'greater5years':
                     await contributors.update({ 
                         experienceLevel5: 1},
-                        { where: { id: interaction.member.user.id } });
+                        { where: { id: interaction.member.user.id, serverid: interaction.guildId, } });
                     break;
             }
 
@@ -453,34 +278,34 @@ client.on('interactionCreate', async interaction => {
                 nftInterest: 0,
                 publicGoodsInterest: 0,
                 artInterest: 0},
-                { where: { id: interaction.member.user.id } });
+                { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
             for (let i=0; i < interaction.values.length; i++) {
                 switch (interaction.values[i])  {
                     case 'daos':
                         await contributors.update({ 
                             daoInterest: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'defi':
                         await contributors.update({ 
                             defiInterest: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'nfts':
                         await contributors.update({ 
                             nftInterest: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'publicgoods':
                         await contributors.update({ 
                             publicGoodsInterest: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'art':
                         await contributors.update({ 
                             artInterest: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                 }
             }
@@ -493,34 +318,34 @@ client.on('interactionCreate', async interaction => {
                 marketingRole: 0,
                 productRole: 0,
                 opsRole: 0},
-                { where: { id: interaction.member.user.id } });
+                { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
             for (let i=0; i < interaction.values.length; i++) {
                 switch (interaction.values[i])  {
                     case 'dev':
                         await projects.update({ 
                             devRole: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'community':
                         await projects.update({ 
                             communityRole: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'marketing':
                         await projects.update({ 
                             marketingRole: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'product':
                         await projects.update({ 
                             productRole: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'ops':
                         await projects.update({ 
                             opsRole: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                 }
             }
@@ -533,33 +358,33 @@ client.on('interactionCreate', async interaction => {
                 experienceLevel3: 0,
                 experienceLevel4: 0,
                 experienceLevel5: 0},
-                { where: { id: interaction.member.user.id } });
+                { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
             for (let i=0; i < interaction.values.length; i++) {
                 switch (interaction.values[i])  {
                     case 'less3months':
                         await projects.update({ 
                             experienceLevel1: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'less6months':
                         await projects.update({ 
                             experienceLevel2: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'less2years':
                         await projects.update({ 
                             experienceLevel3: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'less5years':
                         await projects.update({ 
                             experienceLevel4: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'greater5years':
                         await projects.update({ 
                             experienceLevel5: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                 } 
             }
@@ -572,34 +397,34 @@ client.on('interactionCreate', async interaction => {
                 nftType: 0,
                 publicGoodsType: 0,
                 artType: 0},
-                { where: { id: interaction.member.user.id } });
+                { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
 
             for (let i=0; i < interaction.values.length; i++) {
                 switch (interaction.values[i])  {
                     case 'daos':
                         await projects.update({ 
                             daoType: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'defi':
                         await projects.update({ 
                             defiType: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'nfts':
                         await projects.update({ 
                             nftType: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'publicgoods':
                         await projects.update({ 
                             publicGoodsType: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                     case 'art':
                         await projects.update({ 
                             artType: 1},
-                            { where: { id: interaction.member.user.id } });
+                            { where: { id: interaction.member.user.id, serverid: interaction.guildId } });
                         break;
                 }
             }
@@ -610,4 +435,4 @@ client.on('interactionCreate', async interaction => {
 });
 
 // Login to Discord with your client's token
-client.login(token);
+client.login(TOKEN);
