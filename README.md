@@ -18,7 +18,7 @@ Clone the repository and run ```npm install``` to download all required dependen
 
 The bot matches contributors and projects based on three criteria: role, experience, and project type. When a project performs a search, it will check all possible contributors for matches. Searches are initiated by projects searching for contributors. Searches are done on a per-server basis (there is no cross-server searching due to the potential for abuse). In the event of a match, both the contributor and project will be sent a DM with the information of the other party. The original specification asked for a group DM to be created, but this is not possible under the Discord TOS (it can only be done using a user-bot).
 
-This bot is meant to act as a proof of concept for using the discord platform as a method of connecting projects and contributors in DeFi. It could easily be expanded to include salary bands/expectations as well as countless other potential categories. Many individuals already use discord as a means of finding work; adding basic filtering and automation to this process can save countless hours.
+This bot is meant to act as a proof of concept for using the discord platform as a method of connecting projects and contributors in DeFi. It could easily be expanded to include salary bands/expectations as well as other potential categories. Many individuals already use discord as a means of finding work; adding basic filtering and automation to this process can save countless hours.
 
 ## Commands
 
@@ -36,6 +36,6 @@ This bot is meant to act as a proof of concept for using the discord platform as
 
 - Use an architecture which allows multiple instances of the bot to run in parallel. An easy way to do this would be to pass the interaction to another thread based on guild id, because seperate discord servers do not need to have their data synced. All of the computationally expensive database interactions can be spread across multiple instances.
 
-- Adding a proper management system for contributor and project permissions, to allow servers to lock commands behind roles. This was not added as it may soon be obsolete with https://support.discord.com/hc/en-us/articles/4644915651095-Command-Permissions.
+- Adding a proper management system for contributor and project permissions to allow servers to lock commands behind roles. This was not added as it may soon be obsolete with https://support.discord.com/hc/en-us/articles/4644915651095-Command-Permissions.
 
-- Allow interoperability between groups of servers who opt-in to be part of the same pool of projects and contributors. This functionality could be fairly complex to add depending on the details. The easiest way to implement the functionality would be for one server to act as the administrator of a group, with the ability to invite/kick other servers the pool.
+- Allow interoperability between groups of servers who opt-in to be part of the same pool of projects and contributors. This functionality could be fairly complex to add depending on the details. The easiest way to implement the functionality would be for one server to act as the administrator of a group, with the ability to invite/kick other servers to the pool.
